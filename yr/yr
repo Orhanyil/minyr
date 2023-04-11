@@ -9,13 +9,13 @@ import (
 	"strconv"
 	"strings"
 
-	"https://github.com/Orhanyil/funtemps.git"
+	"github.com/Orhanyil/funtemps/conv"
 )
 
 func ConvertTemperature() {
 	overwriteFile := checkFileExists()
 	if !overwriteFile {
-		fmt.Println("Går tilbake til hovedmeny")
+		fmt.Println("Tilbake til hovedsiden")
 		return
 	}
 
@@ -41,10 +41,8 @@ func ConvertTemperature() {
 	for scanner.Scan() {
 		line := scanner.Text()
 
-		// Prosesser input-linje
 		outputLine := ProcessLine(line)
 
-		// Skriv ferdig prosessert input linje til output-fil
 		_, err := outputWriter.WriteString(outputLine + "\n")
 		if err != nil {
 			panic(err)
@@ -65,7 +63,7 @@ func ConvertTemperature() {
 
 func checkFileExists() bool {
 	if _, err := os.Stat("kjevik-temp-fahr-20220318-20230318.csv"); err == nil {
-		fmt.Print("Filen eksisterer allerede. Vil du generere filen på nytt? (j/n): ")
+		fmt.Print("Det er en fil med samme navn. Vil du gjenoppbygge filen? (j/n): ")
 		var overwriteInput string
 		fmt.Scanln(&overwriteInput)
 		if strings.ToLower(overwriteInput) == "j" {
@@ -126,35 +124,32 @@ func ProcessLine(line string) string {
 		fields[len(fields)-1] = convertedField
 	}
 	if line[0:7] == "Data er" {
-		return "Data er basert på gyldig data (per 18.03.2023) (CC BY 4.0) fra Meteorologisk institutt (MET);endringen er gjort av Bjørnar"
+		return "Data er basert på gyldig data (per 18.03.2023) (CC BY 4.0) fra Meteorologisk institutt (MET);endringen er gjort av Orhan"
 	} else {
 		return strings.Join(fields, ";")
 	}
 }
 
 func convertLastField(lastField string) (string, error) {
-	// Konvertere siste tallet i en linje til float-type
+
 	celsius, err := strconv.ParseFloat(lastField, 64)
 	if err != nil {
 		return "", err
 	}
 
-	// Konverterer celsius til fahrenheit
 	fahrenheit := conv.CelsiusToFahrenheit(celsius)
 
-	// Konverterer float-verdien i fahrenheit tilbake til en string, som var den originale typen.
 	return fmt.Sprintf("%.1f", fahrenheit), nil
 }
 
 func AverageTemperature() {
-	// Åpne input-fil
+
 	file, err := os.Open("kjevik-temp-celsius-20220318-20230318.csv")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
 
-	// lese linjene fra fila
 	scanner := bufio.NewScanner(file)
 
 	var lines []string
@@ -166,12 +161,10 @@ func AverageTemperature() {
 		log.Fatal(err)
 	}
 
-	// Be brukeren om å skrive gjennomsnittlig temperatur i celsius eller fahrenheit
-	fmt.Println("Velg temperaturenhet (celsius/fahr):")
+	fmt.Println("Vennligts Velg (celsius/fahr):")
 	var unit string
 	fmt.Scan(&unit)
 
-	// Regne ut gjennomsnittlig temperatur
 	var sum float64
 	count := 0
 	for i, line := range lines {
@@ -191,7 +184,7 @@ func AverageTemperature() {
 		}
 
 		if unit == "fahr" {
-			// Konverterer tilbake til fahrenheit om det var det brukeren skrev inn
+
 			temperature = conv.CelsiusToFahrenheit(temperature)
 		}
 		sum += temperature
@@ -207,8 +200,6 @@ func AverageTemperature() {
 		fmt.Printf("Gjennomsnittlig temperatur: %.2f°C\n", average)
 	}
 }
-
-// Funksjon som teller linjer i en fil
 
 func CountLines(inputFile string) int {
 	file, err := os.Open(inputFile)
