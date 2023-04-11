@@ -137,7 +137,7 @@ func convertLastField(lastField string) (string, error) {
 		return "", err
 	}
 
-	fahrenheit := conv.CelsiusToFahrenheit(celsius)
+	fahrenheit := conv.CelsiusToFarhenheit(celsius)
 
 	return fmt.Sprintf("%.1f", fahrenheit), nil
 }
@@ -185,7 +185,7 @@ func AverageTemperature() {
 
 		if unit == "fahr" {
 
-			temperature = conv.CelsiusToFahrenheit(temperature)
+			temperature = conv.CelsiusToFarhenheit(temperature)
 		}
 		sum += temperature
 		count++
@@ -245,7 +245,7 @@ func GetAverageTemperature(filepath string, unit string) (string, error) {
 		}
 
 		if unit == "fahr" {
-			temperature = conv.CelsiusToFahrenheit(temperature)
+			temperature = conv.CelsiusToFarhenheit(temperature)
 		}
 		sum += temperature
 		count++
